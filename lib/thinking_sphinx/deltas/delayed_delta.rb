@@ -40,9 +40,9 @@ class ThinkingSphinx::Deltas::DelayedDelta <
       # Only priority option is supported for these versions
       ThinkingSphinx::Configuration.instance.delayed_job_priority || 0
     else
-      {
-        :priority => job_option(:delayed_job_priority, 0),
-        :queue    => job_option(:delayed_job_queue)
+      { priority: job_option(:delayed_job_priority, 0),
+        queue: job_option(:delayed_job_queue),
+        run_at: job_option(:delta_delay, 0).to_i.seconds.from_now
       }
     end
   end
