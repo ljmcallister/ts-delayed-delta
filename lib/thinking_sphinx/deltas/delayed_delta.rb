@@ -40,9 +40,9 @@ class ThinkingSphinx::Deltas::DelayedDelta <
       # Only priority option is supported for these versions
       ThinkingSphinx::Configuration.instance.delayed_job_priority || 0
     else
-      {
-        :priority => job_option(:delayed_job_priority, 0),
-        :queue    => job_option(:delayed_job_queue)
+      { priority: job_option(:delayed_job_priority, 0),
+        queue: job_option(:delayed_job_queue),
+        run_at: job_option(:delta_delay, 0).to_i.seconds.from_now
       }
     end
   end
@@ -57,6 +57,14 @@ class ThinkingSphinx::Deltas::DelayedDelta <
       default
     end
   end
+
+  def toggle(instance)
+    # TODO: consider adding the set_delta_flag? method as a configurable value.  LMC
+    if !instance.respond_to?(:set_delta_flag?) || instance.set_delta_flag?
+      instance.send "#{column}=", true
+    end
+  end
+
 
   module Binary
     # Adds a job to the queue for processing the given model's delta index. A job
